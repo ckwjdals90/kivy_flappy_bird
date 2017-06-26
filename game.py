@@ -41,6 +41,7 @@ class Pipe(Widget):
         self.bottom_image.pos = (self.x, self.y - self.bottom_image.height)
         self.add_widget(self.bottom_image)
         self.width = self.top_image.width
+        self.scored = False
 
     def update(self):
         self.x -= 2
@@ -105,6 +106,7 @@ class Game(Widget):
         # speed of the background animation
         Clock.schedule_interval(self.update, 1.0 / 60.0)
         self.game_over = False
+        self.score = 0
 
     def update(self, dt):
         self.background.update()
@@ -120,8 +122,12 @@ class Game(Widget):
                 self.game_over = True
             elif pipe.bottom_image.collide_widget(self.bird):
                 self.game_over = True
+            elif not pipe.scored and pipe.right < self.bird.x:
+                pipe.scored = True
+                self.score += 1
+
         if self.game_over:
-            print('Game Over!')
+            print('Game Over! Score:', self.score)
 
 
 class GameApp(App):
