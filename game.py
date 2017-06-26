@@ -9,6 +9,25 @@ from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.label import Label
+from kivy.core.audio import SoundLoader
+
+
+class MultiSound(object):
+    def __init__(self, file, num):
+        self.num = num
+        self.sounds = [SoundLoader.load(file) for n in range(num)]
+        self.index = 0
+
+    def play(self):
+        self.sounds[self.index].play()
+        self.index += 1
+        if self.index == self.num:
+            self.index = 0
+
+
+sfx_flap = MultiSound('audio/flap.wav', 3)
+sfx_score = SoundLoader.load('audio/score.wav')
+sfx_die = SoundLoader.load('audio/die.wav')
 
 
 class Sprite(Image):
@@ -86,6 +105,7 @@ class Bird(Sprite):
     def on_touch_down(self, *ignore):
         self.velocity_y = 5.5
         self.source = 'atlas://images/bird_anim/wing-down'
+        sfx_flap.play()
 
 
 class Ground(Sprite):
@@ -139,8 +159,10 @@ class Game(Widget):
                 pipe.scored = True
                 self.score += 1
                 self.score_label.text = str(self.score)
+                sfx_score.play()
 
         if self.game_over:
+            sfx_die.play()
             self.over_label.opacity = 1
 
 
