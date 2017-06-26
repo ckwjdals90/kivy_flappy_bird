@@ -44,6 +44,7 @@ params = params()
 class Sprite(Image):
     def __init__(self, **kwargs):
         super(Sprite, self).__init__(allow_stretch=True, **kwargs)
+        self.texture.mag_filter = 'nearest'
         w, h = self.texture_size
         self.size = (params.scale * w, params.scale * h)
 
