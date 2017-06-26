@@ -1,10 +1,14 @@
 import random
 
+import kivy
+kivy.require("1.10.0")
+
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.clock import Clock
+from kivy.uix.label import Label
 
 
 class Sprite(Image):
@@ -101,6 +105,12 @@ class Game(Widget):
         self.pipes = Pipes(pos=(0, self.ground.height), size=self.size)
         self.add_widget(self.pipes)
         self.add_widget(self.ground)
+        self.score_label = Label(center_x=self.center_x,
+                                 top=self.top - 30, text="0")
+        self.add_widget(self.score_label)
+        self.over_label = Label(center=self.center, opacity=0,
+                                text="Game Over")
+        self.add_widget(self.over_label)
         self.bird = Bird(pos=(20, self.height / 2))
         self.add_widget(self.bird)
         # speed of the background animation
@@ -109,13 +119,16 @@ class Game(Widget):
         self.score = 0
 
     def update(self, dt):
+        if self.game_over:
+            return
+
         self.background.update()
         self.bird.update()
         self.ground.update()
         self.pipes.update(dt)
 
         if self.bird.collide_widget(self.ground):
-            self.gameover = True
+            self.game_over = True
 
         for pipe in self.pipes.children:
             if pipe.top_image.collide_widget(self.bird):
@@ -125,9 +138,10 @@ class Game(Widget):
             elif not pipe.scored and pipe.right < self.bird.x:
                 pipe.scored = True
                 self.score += 1
+                self.score_label.text = str(self.score)
 
         if self.game_over:
-            print('Game Over! Score:', self.score)
+            self.over_label.opacity = 1
 
 
 class GameApp(App):
