@@ -178,6 +178,12 @@ class Game(Widget):
         if self.game_over:
             sfx_die.play()
             self.over_label.opacity = 1
+            self.bind(on_touch_down=self._on_touch_down)
+
+    def _on_touch_down(self, *ignore):
+        parent = self.parent
+        parent.remove_widget(self)
+        parent.add_widget(Menu())
 
 
 class GameApp(App):
