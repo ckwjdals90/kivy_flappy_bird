@@ -13,13 +13,17 @@ class Sprite(Image):
 class Game(Widget):
     def __init__(self):
         super(Game, self).__init__()
-        self.add_widget(Sprite(source='images/background.png'))
+        self.background = Sprite(source='images/background.png')
+        self.size = self.background.size
+        self.add_widget(self.background)
         self.add_widget(Sprite(source='images/bird.png'))
 
 
 class GameApp(App):
     def build(self):
-        return Game()
+        game = Game()
+        Window.size = game.size
+        return game
 
 
 if __name__ == "__main__":
