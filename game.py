@@ -4,11 +4,17 @@ from kivy.core.window import Window
 from kivy.uix.image import Image
 
 
+class Sprite(Image):
+    def __init__(self, **kwargs):
+        super(Sprite, self).__init__(**kwargs)
+        self.size = self.texture_size
+
+
 class Game(Widget):
     def __init__(self):
         super(Game, self).__init__()
-        self.add_widget(Image(source='images/background.png'))
-        self.add_widget(Image(source='images/bird.png'))
+        self.add_widget(Sprite(source='images/background.png'))
+        self.add_widget(Sprite(source='images/bird.png'))
 
 
 class GameApp(App):
