@@ -73,6 +73,20 @@ class Pipe(Widget):
             self.parent.remove_widget(self)
 
 
+class Menu(Widget):
+    def __init__(self):
+        super(Menu, self).__init__()
+        self.add_widget(Sprite(source='images/background.png'))
+        self.size = self.children[0].size
+        self.add_widget(Ground(source='images/ground.png'))
+        self.add_widget(Label(center=self.center, text="Tap to start"))
+
+    def on_touch_down(self, *ignore):
+        parent = self.parent
+        parent.remove_widget(self)
+        parent.add_widget(Game())
+
+
 class Pipes(Widget):
     add_pipe = 0
 
@@ -168,9 +182,10 @@ class Game(Widget):
 
 class GameApp(App):
     def build(self):
-        game = Game()
-        Window.size = game.size
-        return game
+        top = Widget()
+        top.add_widget(Menu())
+        Window.size = top.children[0].size
+        return top
 
 
 if __name__ == "__main__":
