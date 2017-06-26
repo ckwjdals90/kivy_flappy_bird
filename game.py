@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.uix.image import Image
+from kivy.clock import Clock
 
 
 class Sprite(Image):
@@ -10,13 +11,22 @@ class Sprite(Image):
         self.size = self.texture_size
 
 
+class Background(Sprite):
+    def update(self):
+        self.x -= 2
+
+
 class Game(Widget):
     def __init__(self):
         super(Game, self).__init__()
-        self.background = Sprite(source='images/background.png')
+        self.background = Background(source='images/background.png')
         self.size = self.background.size
         self.add_widget(self.background)
         self.add_widget(Sprite(source='images/bird.png'))
+        Clock.schedule_interval(self.update, 1.0 / 60.0)
+
+    def update(self, *ignore):
+        self.background.update()
 
 
 class GameApp(App):
