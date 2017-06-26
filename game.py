@@ -104,6 +104,7 @@ class Game(Widget):
         self.add_widget(self.bird)
         # speed of the background animation
         Clock.schedule_interval(self.update, 1.0 / 60.0)
+        self.game_over = False
 
     def update(self, dt):
         self.background.update()
@@ -112,6 +113,14 @@ class Game(Widget):
         self.pipes.update(dt)
 
         if self.bird.collide_widget(self.ground):
+            self.gameover = True
+
+        for pipe in self.pipes.children:
+            if pipe.top_image.collide_widget(self.bird):
+                self.game_over = True
+            elif pipe.bottom_image.collide_widget(self.bird):
+                self.game_over = True
+        if self.game_over:
             print('Game Over!')
 
 
