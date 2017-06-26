@@ -31,7 +31,8 @@ class Background(Widget):
 
 class Bird(Sprite):
     def __init__(self, pos):
-        super(Bird, self).__init__(source='images/bird.png', pos=pos)
+        super(Bird, self).__init__(source='atlas://images/bird_anim/wing-up',
+                                   pos=pos)
         self.velocity_y = 0
         self.gravity = -.3
 
@@ -39,9 +40,21 @@ class Bird(Sprite):
         self.velocity_y += self.gravity
         self.velocity_y = max(self.velocity_y, -10)
         self.y += self.velocity_y
+        if self.velocity_y < -5:
+            self.source = 'atlas://images/bird_anim/wing-up'
+        elif self.velocity_y < 0:
+            self.source = 'atlas://images/bird_anim/wing-mid'
 
     def on_touch_down(self, *ignore):
         self.velocity_y = 5.5
+        self.source = 'atlas://images/bird_anim/wing-down'
+
+
+class Ground(Sprite):
+    def update(self):
+        self.x -= 2
+        if self.x < -24:  # ground repeats at 24px
+            self.x += 24
 
 
 class Game(Widget):
@@ -50,6 +63,8 @@ class Game(Widget):
         self.background = Background(source='images/background.png')
         self.size = self.background.size
         self.add_widget(self.background)
+        self.ground = Ground(source='images/ground.png')
+        self.add_widget(self.ground)
         self.bird = Bird(pos=(20, self.height / 2))
         self.add_widget(self.bird)
         # speed of the background animation
@@ -58,6 +73,7 @@ class Game(Widget):
     def update(self, *ignore):
         self.background.update()
         self.bird.update()
+        self.ground.update()
 
 
 class GameApp(App):
