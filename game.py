@@ -11,9 +11,22 @@ class Sprite(Image):
         self.size = self.texture_size
 
 
-class Background(Sprite):
+class Background(Widget):
+    def __init__(self, source):
+        super(Background, self).__init__()
+        self.image = Sprite(source=source)
+        self.add_widget(self.image)
+        self.size = self.image.size
+        self.image_dupe = Sprite(source=source, x=self.width)
+        self.add_widget(self.image_dupe)
+
     def update(self):
-        self.x -= 2
+        self.image.x -= 2
+        self.image_dupe.x -= 2
+
+        if self.image.right <= 0:
+            self.image.x = 0
+            self.image_dupe.x = self.width
 
 
 class Game(Widget):
@@ -23,6 +36,7 @@ class Game(Widget):
         self.size = self.background.size
         self.add_widget(self.background)
         self.add_widget(Sprite(source='images/bird.png'))
+        # speed of the background animation
         Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def update(self, *ignore):
